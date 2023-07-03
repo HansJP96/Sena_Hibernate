@@ -6,7 +6,6 @@ import org.hibernate.cfg.Configuration;
 import org.reflections.Reflections;
 
 import java.util.Set;
-import java.util.logging.Level;
 
 public class SessionConfigUtil {
 

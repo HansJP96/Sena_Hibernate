@@ -42,14 +42,16 @@ public class EditorialesRepositoryImp extends SessionTransactionUtil implements 
     }
 
     @Override
-    public EditorialesModel delete(EditorialesModel modelObject) {
+    public EditorialesModel delete(Object key) {
+        EditorialesModel deletedEditorial = new EditorialesModel();
+        deletedEditorial.setNit((String) key);
         try {
             Consumer<EditorialesModel> deleteEditorial = session::remove;
-            doTransaction(modelObject, deleteEditorial);
-            System.out.printf("La editorial con nit:%s fue eliminada exitosamente.", modelObject.getNit());
+            doTransaction(deletedEditorial, deleteEditorial);
+//            System.out.printf("La editorial con nit:%s fue eliminada exitosamente.", modelObject.getNit());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return modelObject;
+        return deletedEditorial;
     }
 }

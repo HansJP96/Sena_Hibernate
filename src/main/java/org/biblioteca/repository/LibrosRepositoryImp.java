@@ -42,14 +42,16 @@ public class LibrosRepositoryImp extends SessionTransactionUtil implements Libro
     }
 
     @Override
-    public LibrosModel delete(LibrosModel modelObject) {
+    public LibrosModel delete(Object key) {
+        LibrosModel deletedLibro = new LibrosModel();
+        deletedLibro.setIsbn((String) key);
         try {
             Consumer<LibrosModel> deleteLibro = session::remove;
-            doTransaction(modelObject, deleteLibro);
-            System.out.printf("El libro con nit:%s fue eliminada exitosamente.", modelObject.getIsbn());
+            doTransaction(deletedLibro, deleteLibro);
+//            System.out.printf("El libro con nit:%s fue eliminada exitosamente.", modelObject.getIsbn());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return modelObject;
+        return deletedLibro;
     }
 }

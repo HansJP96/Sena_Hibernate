@@ -2,41 +2,32 @@ package org.biblioteca;
 
 import org.biblioteca.controller.CategoriasController;
 import org.biblioteca.controller.LibrosController;
-import org.biblioteca.enums.controller.EnumCategoriasController;
-import org.biblioteca.interfaces.controller.GeneralController;
-import org.hibernate.Session;
+import org.biblioteca.models.CategoriasModel;
+import org.biblioteca.repository.CategoriasRepositoryImp;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Scanner;
 
 
 /**
  * Hello world!
- *
  */
 public class App {
 
-    private static Session session;
     public static final Scanner input = new Scanner(System.in);
 
-            public static void main( String[] args )
-    {
+    public static void main(String[] args) throws InvocationTargetException, IllegalAccessException {
         System.out.println("Bienvenido");
         System.out.println("Por favor digite el numero de la tabla en la que desea realizar operaciones:");
         System.out.println("1 => Categorias");
         System.out.println("2 => Editoriales");
         System.out.println("3 => Libros");
         String selection = input.nextLine();
-        GeneralController controller;
         switch (selection) {
             case "1":
-//                CategoriasRepositoryImp categoriasRepositoryImp = new CategoriasRepositoryImp();
-//                CategoriasController categoriasController = new CategoriasController();
-                controller = new CategoriasController();
-                controller.showCommonOperations2222(EnumCategoriasController.values());
-                String opcion = input.nextLine();
-                controller.selectedOperationHandler222(opcion);
-//                prueba.selectTransaction(categoriasController);
-//                prueba.selectTransaction22222(categoriasRepositoryImp);
+                CategoriasController controller = new CategoriasController();
+                String option = controller.showAvailableOperations(new CategoriasRepositoryImp());
+                controller.selectedOperationHandler(option, new CategoriasModel());
                 return;
             case "2":
                 LibrosController librosController = new LibrosController();
