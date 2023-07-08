@@ -1,79 +1,93 @@
 package org.biblioteca.controller;
 
-import org.biblioteca.interfaces.controller.Operation;
+import org.biblioteca.enums.CommonOutPrintControllerEnum;
+import org.biblioteca.interfaces.annotations.Operation;
 import org.biblioteca.models.CategoriasModel;
+
+import java.util.List;
 
 import static org.biblioteca.App.input;
 
+/**
+ * La clase CategoriasController funciona como punto de acceso a las operaciones que se pueden llevar a cabo para el
+ * modelo de Categoria asi como de proporcionar la interfaz de interaccion mediante consola entre usuario y acciones disponibles
+ */
+public class CategoriasController extends GeneralConsoleController<CategoriasModel> {
 
-public class CategoriasController extends GeneralController<CategoriasModel> {
+    private final List<String> opRequireCodigo = List.of("3");
 
     @Override
-    public Object fillModelData() {
+    protected Object fillModelData() {
         System.out.println("Por favor ingrese el Codigo de la Categoria:");
         return input.nextInt();
     }
 
     @Override
-    protected CategoriasModel fillModelData(CategoriasModel modelInstance) {
-        String dato;
-        System.out.println("Por favor ingrese los datos necesarios para su operación:");
+    protected CategoriasModel fillModelData(CategoriasModel modelInstance, String opId) {
+        String inputValue;
         model_form:
         while (true) {
             showCategoriaCollectableData();
-            dato = input.nextLine();
-            switch (dato) {
-                case "0":
+            inputValue = input.nextLine();
+            switch (inputValue) {
+                case "1":
                     enterCodigo(modelInstance);
                     break;
-                case "1":
+                case "2":
                     enterNombre(modelInstance);
                     break;
-                case ":q":
+                case FINISH_OPERATION_KEY:
                     break model_form;
                 default:
-                    System.out.println("Por favor digite primero la accion que desea realizar, luego podrá digitar el valor correspondiente.");
+                    System.out.println(CommonOutPrintControllerEnum.OUT_BOUND_OPTION.getValue());
             }
-            System.out.println("Si desea ingresar mas datos digite el numero indicado, si finalizo por favor ingrese ':q' para ejecutar la operacion.");
+            System.out.println(CommonOutPrintControllerEnum.OPERATION_TO_FINISH.getValue());
+        }
+        if (modelInstance.getCodigo() == null && opRequireCodigo.contains(opId)) {
+            System.out.println("Se requiere colocar un numero de Categoria para completar la Operacion.");
+            fillModelData(modelInstance, opId);
         }
         return modelInstance;
     }
 
     @Override
-    protected void printModel(Object object, Operation operation) {
-        if (object instanceof CategoriasModel) {
-            System.out.println(operation.result());
-            System.out.println(object);
-        } else if (object == null) {
-            resultValidation(operation.position());
+    protected void printModel(Object model, Operation operationObject) {
+        if (model instanceof CategoriasModel) {
+            System.out.println(operationObject.result());
+            System.out.println(model);
+        } else if (model == null) {
+            resultValidation(operationObject.id());
         } else {
             throw new ClassCastException();
         }
     }
 
-    private void resultValidation(String positionOperation) {
-        switch (positionOperation) {
+    protected void resultValidation(String operationId) {
+        switch (operationId) {
             case "1":
-            case "3":
+            case "4":
                 System.out.println("No existe Categoria con ese Codigo");
                 break;
             default:
-                System.out.println("El resultado no se ha podido identifcar correctamente");
+                System.out.println(CommonOutPrintControllerEnum.UNEXPECTED_PRINT_RESULT.getValue());
         }
     }
 
+    /**
+     * Muestra la disponibilidad de datos que puede recibir el modelo de Categoria
+     */
     private void showCategoriaCollectableData() {
-        System.out.println("0. Escribir Codigo de Categoria (solo números)");
-        System.out.println("1. Escribir Nombre de Categoria");
+        System.out.println("1. Escribir Codigo de Categoria (solo números)");
+        System.out.println("2. Escribir Nombre de Categoria");
     }
 
-    private void enterCodigo(CategoriasModel categoriasModel) {
-        System.out.print("Digite el Codigo:\t");
-        categoriasModel.setCodigo(Integer.parseInt(input.nextLine()));
-    }
-
-    private void enterNombre(CategoriasModel categoriasModel) {
+    private void enterNombre(CategoriasModel modelInstance) {
         System.out.print("Digite el Nombre:\t");
-        categoriasModel.setNombre(input.nextLine());
+        modelInstance.setNombre(input.nextLine());
+    }
+
+    private void enterCodigo(CategoriasModel modelInstance) {
+        System.out.print("Digite el Codigo:\t");
+        modelInstance.setCodigo(Integer.parseInt(input.nextLine()));
     }
 }

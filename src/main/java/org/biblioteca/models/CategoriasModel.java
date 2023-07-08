@@ -4,11 +4,12 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.io.Serializable;
-
+/**
+ * Entidad-modelo Categorias representacion de la tabla "categorias" de la Base de Datos Biblioteca
+ */
 @Entity
 @Table(name = "categorias", schema = "biblioteca")
-public class CategoriasModel implements Serializable {
+public class CategoriasModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo", nullable = false)

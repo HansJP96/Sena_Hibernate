@@ -7,6 +7,9 @@ import org.reflections.Reflections;
 
 import java.util.Set;
 
+/**
+ * Clase de utilidades para la configuracion inicial de Hibernate relativo a la sesion de comunicacion
+ */
 public class SessionConfigUtil {
 
     private static SessionFactory sessionFactory;
@@ -15,6 +18,10 @@ public class SessionConfigUtil {
     private SessionConfigUtil() {
     }
 
+    /**
+     * Devuelve una instancia de SessionFactory configurada
+     * @return Objeto session configurada para iniciar las transacciones de Hiberante
+     */
     public static synchronized SessionFactory getSessionFactory() {
         try {
             if (sessionFactory == null) {

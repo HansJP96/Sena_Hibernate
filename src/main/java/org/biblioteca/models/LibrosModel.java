@@ -1,18 +1,20 @@
 package org.biblioteca.models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import javax.annotation.Nonnull;
-import java.io.Serializable;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
+/**
+ * Entidad-modelo Libros representacion de la tabla "libros" de la Base de Datos Biblioteca
+ */
 @Entity
+@DynamicUpdate
 @Table(name = "libros", schema = "biblioteca")
-public class LibrosModel implements Serializable {
+public class LibrosModel {
     @Id
     @Column(name = "isbn", nullable = false, length = 20)
     @JdbcTypeCode(SqlTypes.VARCHAR)

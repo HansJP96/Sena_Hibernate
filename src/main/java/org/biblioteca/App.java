@@ -1,22 +1,30 @@
 package org.biblioteca;
 
 import org.biblioteca.controller.CategoriasController;
+import org.biblioteca.controller.EditorialController;
 import org.biblioteca.controller.LibrosController;
 import org.biblioteca.models.CategoriasModel;
+import org.biblioteca.models.EditorialesModel;
+import org.biblioteca.models.LibrosModel;
 import org.biblioteca.repository.CategoriasRepositoryImp;
+import org.biblioteca.repository.EditorialesRepositoryImp;
+import org.biblioteca.repository.LibrosRepositoryImp;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Scanner;
 
-
 /**
- * Hello world!
+ * Clase principal para la ejecucion del programa del proyecto de Biblioteca para poder realizar operaciones (CRUD)
+ * en tres tablas determinadas: Categorias, Editoriales y Libros
+ * @author: Hansee Jimenez Perez - Sena
+ * @version : 1.1
  */
 public class App {
 
     public static final Scanner input = new Scanner(System.in);
 
     public static void main(String[] args) throws InvocationTargetException, IllegalAccessException {
+        String option;
         System.out.println("Bienvenido");
         System.out.println("Por favor digite el numero de la tabla en la que desea realizar operaciones:");
         System.out.println("1 => Categorias");
@@ -25,33 +33,22 @@ public class App {
         String selection = input.nextLine();
         switch (selection) {
             case "1":
-                CategoriasController controller = new CategoriasController();
-                String option = controller.showAvailableOperations(new CategoriasRepositoryImp());
-                controller.selectedOperationHandler(option, new CategoriasModel());
+                CategoriasController categoriasController = new CategoriasController();
+                option = categoriasController.selectAvailableOperations(new CategoriasRepositoryImp());
+                categoriasController.executeOperationHandler(option, new CategoriasModel());
                 return;
             case "2":
-                LibrosController librosController = new LibrosController();
-//                prueba.selectTransaction(librosController);
+                EditorialController editorialController = new EditorialController();
+                option = editorialController.selectAvailableOperations(new EditorialesRepositoryImp());
+                editorialController.executeOperationHandler(option, new EditorialesModel());
                 return;
             case "3":
+                LibrosController librosController = new LibrosController();
+                option = librosController.selectAvailableOperations(new LibrosRepositoryImp());
+                librosController.executeOperationHandler(option, new LibrosModel());
                 return;
             default:
                 System.out.println("Por favor elija uno de los numeros indicados.");
         }
     }
-//    LibrosModel librosModel111 = new LibrosModel();
-//        librosModel111.setIsbn("123-3456-7789");
-//        librosModel111.setTitulo("La complexia");
-//        librosModel111.setDescripcion("Algo normal");
-//        librosModel111.setNombreAutor("Ikki seiya");
-//        librosModel111.setFechaRegistro(new Timestamp(System.currentTimeMillis()));
-//        librosModel111.setPublicacion(LocalDate.of(2001,12, 1));
-//    CategoriasModel categoriasModel = new CategoriasModel();
-//        categoriasModel.setCodigo(10);
-//        librosModel111.setCategoria(categoriasModel);
-//    EditorialesModel editorialesModel = new EditorialesModel();
-//        editorialesModel.setNit("12325");
-//        librosModel111.setEditorial(editorialesModel);
-//    LibrosModel librosModel222 = librosRepositoryImp.save(librosModel111);
-//        System.out.println(librosModel222);
 }

@@ -1,40 +1,45 @@
 package org.biblioteca.repository;
 
+import org.biblioteca.enums.ModelInputEnum;
+import org.biblioteca.interfaces.annotations.Operation;
 import org.biblioteca.interfaces.repository.LibrosRepository;
+import org.biblioteca.interfaces.repository.MergeInstanceInterface;
 import org.biblioteca.models.LibrosModel;
-import org.biblioteca.utils.SessionTransactionUtil;
+import org.biblioteca.interfaces.hibernate.SessionTransactionUtil;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-public class LibrosRepositoryImp extends SessionTransactionUtil implements LibrosRepository {
+/**
+ * Clase de implementacion de las operaciones del modelo Libros
+ */
+public class LibrosRepositoryImp implements LibrosRepository, SessionTransactionUtil, MergeInstanceInterface<LibrosModel> {
+
     @Override
+    @Operation(id = "1", inputType = ModelInputEnum.OBJECT_PARAM, selectable = "Obtener Libro por ISBN", result = "El Libro obtenido es:")
     public LibrosModel getByPrimaryKey(Object key) {
-        LibrosModel getLibro= null;
+        LibrosModel getLibro = null;
         try {
             Function<String, LibrosModel> findLibro =
                     isbn -> session.get(LibrosModel.class, isbn);
             getLibro = doTransaction((String) key, findLibro);
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return  getLibro;
+        return getLibro;
     }
 
     @Override
-    public LibrosModel save(LibrosModel modelObject) {
+    @Operation(id = "2", selectable = "Crear Libro", result = "El Libro creado es:")
+    public LibrosModel saveNew(LibrosModel modelObject) {
         LibrosModel newLibro = null;
         try {
-            UnaryOperator<LibrosModel> createUpdateLibro = libro -> {
-                if (libro.getIsbn() == null) {
-                    session.persist(libro);
-                } else {
-                    libro = session.merge(libro);
-                }
+            UnaryOperator<LibrosModel> createLibro = libro -> {
+                session.persist(libro);
                 return libro;
             };
-            newLibro = doTransaction(modelObject, createUpdateLibro);
+            newLibro = doTransaction(modelObject, createLibro);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -42,13 +47,30 @@ public class LibrosRepositoryImp extends SessionTransactionUtil implements Libro
     }
 
     @Override
+    @Operation(id = "3", selectable = "Actualizar Libro", result = "El nuevo Libro es:")
+    public LibrosModel update(LibrosModel modelObject) {
+        LibrosModel updatedLibro = null;
+        try {
+            UnaryOperator<LibrosModel> updateLibro = newLibro -> {
+                LibrosModel currentLibro = session.get(LibrosModel.class, newLibro.getIsbn());
+                currentLibro = session.merge(mergeObjects(newLibro, currentLibro));
+                return currentLibro;
+            };
+            updatedLibro = doTransaction(modelObject, updateLibro);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return updatedLibro;
+    }
+
+    @Override
+    @Operation(id = "4", inputType = ModelInputEnum.OBJECT_PARAM, selectable = "Eliminar Libro por ISBN", result = "El libro eliminado fue:")
     public LibrosModel delete(Object key) {
         LibrosModel deletedLibro = new LibrosModel();
         deletedLibro.setIsbn((String) key);
         try {
             Consumer<LibrosModel> deleteLibro = session::remove;
             doTransaction(deletedLibro, deleteLibro);
-//            System.out.printf("El libro con nit:%s fue eliminada exitosamente.", modelObject.getIsbn());
         } catch (Exception e) {
             e.printStackTrace();
         }
