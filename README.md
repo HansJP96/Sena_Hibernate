@@ -4,10 +4,13 @@
 La presente actividad consiste en el desarrollo de un modulo para la gestion de libros de una Biblioteca empleando las siguientes tecnologias:
 
 - Java 11
+- Maven
 - Hibernate
 - MySQL
 
-El desarrollo del programa se realizo para su utilizacion mediante consola.
+El desarrollo del programa se realizo para su uso mediante consola.
+
+El IDE empleado para el desarrollo fue IntelliJ IDEA.
 
 ## Documentacion
 
@@ -61,7 +64,7 @@ A partir de lo que se requiere desarrollar se crean las siguientes Historias de 
 
 - Se debe poder realizar el registro de una nueva categoria (que no exista previamente) colocando unicamente el nombre de la categoria.
 
-- Se debe poder actualizar el nombre de la categoria.
+- Se debe poder actualizar el nombre de la categoria utilizando el Codigo de la categoria.
 
 - Se debe poder eliminar una categoria mediante su Codigo siempre y cuando no exista ningun libro que pertenezca a dicha categoria.
 
@@ -82,3 +85,10 @@ A partir de lo que se requiere desarrollar se crean las siguientes Historias de 
 - Se debe poder actualizar la informacion de una editorial ya registrada teniendo en cuenta unicamente los datos que se requieren modificar.
 
 - Se debe poder eliminar una editorial segun su NIT siempre y cuando no exista ningun libro que pertenezca a dicha editorial.
+
+## Recomendaciones
+
+Para establecer correctamente la conexion con la base de datos es necesario asegurarse que se tiene creada una base de datos llamada "biblioteca" y cuyo usuarui sea "root" sin contraseña para la conexion. En
+caso que no sea asi, es necesario ir a la ruta src/main/resources y editar los valores correspondientes del archivo "hibernate.cfg.xml".
+
+La base de datos esta creada tal cual como se hizo en las actividades previas por lo que la estructura deberia ser compatible.
