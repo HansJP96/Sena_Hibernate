@@ -2,9 +2,10 @@ package org.biblioteca.repository;
 
 import org.biblioteca.enums.ModelInputEnum;
 import org.biblioteca.interfaces.annotations.Operation;
+import org.biblioteca.interfaces.hibernate.SessionTransactionInterface;
+import org.biblioteca.interfaces.hibernate.validators.UpdateValidation;
 import org.biblioteca.interfaces.repository.CategoriasRepository;
 import org.biblioteca.models.CategoriasModel;
-import org.biblioteca.interfaces.hibernate.SessionTransactionUtil;
 
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
@@ -13,16 +14,16 @@ import java.util.function.UnaryOperator;
 /**
  * Clase de implementacion de las operaciones del modelo Categorias
  */
-public class CategoriasRepositoryImp implements CategoriasRepository, SessionTransactionUtil {
+public class CategoriasRepositoryImp implements CategoriasRepository, SessionTransactionInterface {
 
     @Override
     @Operation(id = "1", inputType = ModelInputEnum.OBJECT_PARAM, selectable = "Obtener Categoria por Codigo", result = "La Categoria obtenida es:")
-    public CategoriasModel getByPrimaryKey(Object key) {
+    public CategoriasModel getByPrimaryKey(CategoriasModel key) {
         CategoriasModel getCategoria = null;
         try {
             IntFunction<CategoriasModel> findCategoria =
                     codigo -> session.get(CategoriasModel.class, codigo);
-            getCategoria = doTransaction((Integer) key, findCategoria);
+            getCategoria = doTransaction(key.getCodigo(), findCategoria);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -46,7 +47,7 @@ public class CategoriasRepositoryImp implements CategoriasRepository, SessionTra
     }
 
     @Override
-    @Operation(id = "3", selectable = "Actualizar Categoria", result = "La nueva Categoria es:")
+    @Operation(id = "3", opClassRestrict = {UpdateValidation.class}, selectable = "Actualizar Categoria", result = "La nueva Categoria es:")
     public CategoriasModel update(CategoriasModel modelObject) {
         CategoriasModel updatedCategoria = null;
         try {
@@ -63,12 +64,12 @@ public class CategoriasRepositoryImp implements CategoriasRepository, SessionTra
 
     @Override
     @Operation(id = "4", inputType = ModelInputEnum.OBJECT_PARAM, selectable = "Eliminar Categoria por Codigo", result = "La Categoria eliminada fue:")
-    public CategoriasModel delete(Object key) {
-        CategoriasModel deletedCategoria = new CategoriasModel();
-        deletedCategoria.setCodigo((Integer) key);
+    public CategoriasModel delete(CategoriasModel key) {
+        CategoriasModel deletedCategoria = null;
         try {
+            deletedCategoria = getByPrimaryKey(key);
             Consumer<CategoriasModel> deleteCategoria = session::remove;
-            doTransaction(deletedCategoria, deleteCategoria);
+            if (deletedCategoria != null) doTransaction(deletedCategoria, deleteCategoria);
         } catch (Exception e) {
             e.printStackTrace();
         }

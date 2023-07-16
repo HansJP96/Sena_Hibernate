@@ -1,6 +1,12 @@
 package org.biblioteca.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Size;
+import org.biblioteca.interfaces.hibernate.validators.CreateValidation;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -18,22 +24,29 @@ public class LibrosModel {
     @Id
     @Column(name = "isbn", nullable = false, length = 20)
     @JdbcTypeCode(SqlTypes.VARCHAR)
+    @NotNull(message = "{libros.isbn.NOT_NULL}")
+    @Size(max = 20, message = "{libros.isbn.SIZE}")
     private String isbn;
 
     @Column(name = "titulo", length = 100)
     @JdbcTypeCode(SqlTypes.VARCHAR)
+    @NotBlank(message = "{libros.titulo.NOT_BLANK}", groups = CreateValidation.class)
+    @Size(min = 2, max = 100, message = "{libros.titulo.SIZE}")
     private String titulo;
 
     @Column(name = "nombre_autor", length = 100)
     @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Size(min = 3, max = 100, message = "{libros.nombre_autor.SIZE}")
     private String nombreAutor;
 
     @Column(name = "descripcion")
     @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Size(max = 255, message = "{libros.descripcion.SIZE}")
     private String descripcion;
 
     @Column(name = "publicacion")
     @JdbcTypeCode(SqlTypes.DATE)
+    @PastOrPresent(message = "{libros.publicacion.VALID_DATE}")
     private LocalDate publicacion;
 
     @Column(name = "fecha_registro")
@@ -42,11 +55,16 @@ public class LibrosModel {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "codigo_categoria", nullable = false)
+    @NotNull(message = "{libros.categoria.NOT_NULL}", groups = CreateValidation.class)
     private CategoriasModel categoria;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "nit_editorial", nullable = false)
+    @NotNull(message = "{libros.editorial.NOT_NULL}", groups = CreateValidation.class)
     private EditorialesModel editorial;
+
+    public LibrosModel() {
+    }
 
     public EditorialesModel getEditorial() {
         return editorial;

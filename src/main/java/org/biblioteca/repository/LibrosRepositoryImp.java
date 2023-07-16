@@ -2,10 +2,11 @@ package org.biblioteca.repository;
 
 import org.biblioteca.enums.ModelInputEnum;
 import org.biblioteca.interfaces.annotations.Operation;
+import org.biblioteca.interfaces.hibernate.SessionTransactionInterface;
+import org.biblioteca.interfaces.hibernate.validators.CreateValidation;
 import org.biblioteca.interfaces.repository.LibrosRepository;
 import org.biblioteca.interfaces.repository.MergeInstanceInterface;
 import org.biblioteca.models.LibrosModel;
-import org.biblioteca.interfaces.hibernate.SessionTransactionUtil;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -14,16 +15,16 @@ import java.util.function.UnaryOperator;
 /**
  * Clase de implementacion de las operaciones del modelo Libros
  */
-public class LibrosRepositoryImp implements LibrosRepository, SessionTransactionUtil, MergeInstanceInterface<LibrosModel> {
+public class LibrosRepositoryImp implements LibrosRepository, SessionTransactionInterface, MergeInstanceInterface<LibrosModel> {
 
     @Override
     @Operation(id = "1", inputType = ModelInputEnum.OBJECT_PARAM, selectable = "Obtener Libro por ISBN", result = "El Libro obtenido es:")
-    public LibrosModel getByPrimaryKey(Object key) {
+    public LibrosModel getByPrimaryKey(LibrosModel key) {
         LibrosModel getLibro = null;
         try {
             Function<String, LibrosModel> findLibro =
                     isbn -> session.get(LibrosModel.class, isbn);
-            getLibro = doTransaction((String) key, findLibro);
+            getLibro = doTransaction(key.getIsbn(), findLibro);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -31,7 +32,7 @@ public class LibrosRepositoryImp implements LibrosRepository, SessionTransaction
     }
 
     @Override
-    @Operation(id = "2", selectable = "Crear Libro", result = "El Libro creado es:")
+    @Operation(id = "2", opClassRestrict = CreateValidation.class, selectable = "Crear Libro", result = "El Libro creado es:")
     public LibrosModel saveNew(LibrosModel modelObject) {
         LibrosModel newLibro = null;
         try {
@@ -65,12 +66,12 @@ public class LibrosRepositoryImp implements LibrosRepository, SessionTransaction
 
     @Override
     @Operation(id = "4", inputType = ModelInputEnum.OBJECT_PARAM, selectable = "Eliminar Libro por ISBN", result = "El libro eliminado fue:")
-    public LibrosModel delete(Object key) {
-        LibrosModel deletedLibro = new LibrosModel();
-        deletedLibro.setIsbn((String) key);
+    public LibrosModel delete(LibrosModel key) {
+        LibrosModel deletedLibro = null;
         try {
+            deletedLibro = getByPrimaryKey(key);
             Consumer<LibrosModel> deleteLibro = session::remove;
-            doTransaction(deletedLibro, deleteLibro);
+            if (deletedLibro != null) doTransaction(deletedLibro, deleteLibro);
         } catch (Exception e) {
             e.printStackTrace();
         }

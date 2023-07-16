@@ -4,22 +4,21 @@ import org.biblioteca.enums.CommonOutPrintControllerEnum;
 import org.biblioteca.interfaces.annotations.Operation;
 import org.biblioteca.models.EditorialesModel;
 
-import java.util.List;
-
 import static org.biblioteca.App.input;
 
 public class EditorialController extends GeneralConsoleController<EditorialesModel> {
 
-    private final List<String> opRequireNit = List.of("2","3");
 
     @Override
-    protected Object fillModelData() {
+    protected EditorialesModel fillModelData() {
+        EditorialesModel model = new EditorialesModel();
         System.out.println("Por favor ingrese el Nit de la Editorial:");
-        return input.next();
+        model.setNit(input.next());
+        return model;
     }
 
     @Override
-    protected EditorialesModel fillModelData(EditorialesModel modelInstance, String opId) {
+    protected EditorialesModel fillModelData(EditorialesModel modelInstance) {
         String inputValue;
         model_form:
         while (true) {
@@ -51,20 +50,18 @@ public class EditorialController extends GeneralConsoleController<EditorialesMod
             }
             System.out.println(CommonOutPrintControllerEnum.OPERATION_TO_FINISH.getValue());
         }
-        if (modelInstance.getNit() == null && opRequireNit.contains(opId)) {
-            System.out.println("Se requiere colocar un Nit de Editorial para completar la Operacion.");
-            fillModelData(modelInstance, opId);
-        }
         return modelInstance;
     }
 
     @Override
-    protected void printModel(Object model, Operation operationObject) {
+    protected boolean printModel(Object model, Operation operationObject) {
         if (model instanceof EditorialesModel) {
             System.out.println(operationObject.result());
             System.out.println(model);
+            return false;
         } else if (model == null) {
             resultValidation(operationObject.id());
+            return true;
         } else {
             throw new ClassCastException();
         }

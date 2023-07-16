@@ -8,10 +8,10 @@ public interface GeneralRepositoryInterface<T> {
 
     /**
      * Trae el registro de la entidad correspondiente
-     * @param key LLave primaria de la entidad modelo que representa la tabla
+     * @param key Instancia de la entidad modelo que contiene el atributo correspondiente a la llave primaria que representa la tabla
      * @return Instancia de la clase modelo especifica
      */
-    T getByPrimaryKey(Object key);
+    T getByPrimaryKey(T key);
 
     /**
      * Crea un nuevo registro de la entidad correspondiente
@@ -23,14 +23,14 @@ public interface GeneralRepositoryInterface<T> {
     /**
      * Actualiza un registro de la entidad correspondiente
      * @param modelObject Instancia de la entidad modelo con la informacion para actualizar
-     * @return
+     * @return Instancia de la clase modelo especifica
      */
     T update(T modelObject);
 
     /**
      * Elimina un registro de la entidad correspondiente
-     * @param key LLave primaria de la entidad modelo que representa la tabla
+     * @param key Instancia de la entidad modelo que contiene el atributo correspondiente a la llave primaria que representa la tabla
      * @return Instancia de la entidad modelo unicamente con el valor de la llave primaria
      */
-    T delete(Object key);
+    T delete(T key);
 }

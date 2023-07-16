@@ -4,8 +4,6 @@ import org.biblioteca.enums.CommonOutPrintControllerEnum;
 import org.biblioteca.interfaces.annotations.Operation;
 import org.biblioteca.models.CategoriasModel;
 
-import java.util.List;
-
 import static org.biblioteca.App.input;
 
 /**
@@ -14,16 +12,16 @@ import static org.biblioteca.App.input;
  */
 public class CategoriasController extends GeneralConsoleController<CategoriasModel> {
 
-    private final List<String> opRequireCodigo = List.of("3");
-
     @Override
-    protected Object fillModelData() {
+    protected CategoriasModel fillModelData() {
+        CategoriasModel model = new CategoriasModel();
         System.out.println("Por favor ingrese el Codigo de la Categoria:");
-        return input.nextInt();
+        model.setCodigo(input.nextInt());
+        return model;
     }
 
     @Override
-    protected CategoriasModel fillModelData(CategoriasModel modelInstance, String opId) {
+    protected CategoriasModel fillModelData(CategoriasModel modelInstance) {
         String inputValue;
         model_form:
         while (true) {
@@ -43,20 +41,18 @@ public class CategoriasController extends GeneralConsoleController<CategoriasMod
             }
             System.out.println(CommonOutPrintControllerEnum.OPERATION_TO_FINISH.getValue());
         }
-        if (modelInstance.getCodigo() == null && opRequireCodigo.contains(opId)) {
-            System.out.println("Se requiere colocar un numero de Categoria para completar la Operacion.");
-            fillModelData(modelInstance, opId);
-        }
         return modelInstance;
     }
 
     @Override
-    protected void printModel(Object model, Operation operationObject) {
+    protected boolean printModel(Object model, Operation operationObject) {
         if (model instanceof CategoriasModel) {
             System.out.println(operationObject.result());
             System.out.println(model);
+            return false;
         } else if (model == null) {
             resultValidation(operationObject.id());
+            return true;
         } else {
             throw new ClassCastException();
         }

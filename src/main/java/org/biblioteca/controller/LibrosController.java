@@ -8,6 +8,7 @@ import org.biblioteca.models.LibrosModel;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import static org.biblioteca.App.input;
@@ -15,18 +16,18 @@ import static org.biblioteca.utils.DateFormatsUtil.DD_MM_YYYY_SLASH_FORMAT;
 
 public class LibrosController extends GeneralConsoleController<LibrosModel> {
 
-    private final List<String> opRequireIsbn = List.of("2", "3");
-
     private final List<String> opRequireCurrentDate = List.of("2");
 
     @Override
-    protected Object fillModelData() {
+    protected LibrosModel fillModelData() {
+        LibrosModel model = new LibrosModel();
         System.out.println("Por favor ingrese el ISBN del Libro:");
-        return input.next();
+        model.setIsbn(input.next());
+        return model;
     }
 
     @Override
-    protected LibrosModel fillModelData(LibrosModel modelInstance, String opId) {
+    protected LibrosModel fillModelData(LibrosModel modelInstance) {
         String inputValue;
         model_form:
         while (true) {
@@ -61,21 +62,19 @@ public class LibrosController extends GeneralConsoleController<LibrosModel> {
             }
             System.out.println(CommonOutPrintControllerEnum.OPERATION_TO_FINISH.getValue());
         }
-        if (modelInstance.getIsbn() == null && opRequireIsbn.contains(opId)) {
-            System.out.println("Se requiere colocar un ISBN de Libro para completar la Operacion.");
-            fillModelData(modelInstance, opId);
-        }
-        if (opRequireCurrentDate.contains(opId)) addFechaRegistro(modelInstance);
+        if (opRequireCurrentDate.contains(operationId)) addFechaRegistro(modelInstance);
         return modelInstance;
     }
 
     @Override
-    protected void printModel(Object model, Operation operationObject) {
+    protected boolean printModel(Object model, Operation operationObject) {
         if (model instanceof LibrosModel) {
             System.out.println(operationObject.result());
             System.out.println(model);
+            return false;
         } else if (model == null) {
             resultValidation(operationObject.id());
+            return true;
         } else {
             throw new ClassCastException();
         }
@@ -126,9 +125,14 @@ public class LibrosController extends GeneralConsoleController<LibrosModel> {
     }
 
     private void enterFechaPublicacion(LibrosModel modelInstance) {
-        System.out.print("Digite la Fecha de Publicacion:\t");
-        String fecha = input.nextLine();
-        modelInstance.setPublicacion(LocalDate.parse(fecha, DD_MM_YYYY_SLASH_FORMAT));
+        try {
+            System.out.print("Digite la Fecha de Publicacion:\t");
+            String fecha = input.nextLine();
+            modelInstance.setPublicacion(LocalDate.parse(fecha, DD_MM_YYYY_SLASH_FORMAT));
+        } catch (DateTimeParseException e){
+            System.out.println("Por favor digite una Fecha con el formato indicado Ej: 01/01/2010");
+            enterFechaPublicacion(modelInstance);
+        }
     }
 
     private void enterNitEditorial(LibrosModel modelInstance) {

@@ -1,5 +1,6 @@
 package org.biblioteca.interfaces.annotations;
 
+import jakarta.validation.groups.Default;
 import org.biblioteca.enums.ModelInputEnum;
 
 import java.lang.annotation.ElementType;
@@ -21,4 +22,6 @@ public @interface Operation {
     ModelInputEnum inputType() default ModelInputEnum.MODEL_PARAM;
 
     String id() default "";
+
+    Class<?>[] opClassRestrict() default {Default.class};
 }

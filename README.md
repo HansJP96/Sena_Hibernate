@@ -44,7 +44,7 @@ A partir de lo que se requiere desarrollar se crean las siguientes Historias de 
 
 - Se debe poder buscar cualquier libro que exista en la biblioteca a partir de su ISBN.
 
-- Se debe poder realizar el registro de un nuevo libro (que no exista en la biblioteca) al menos con los datos obligatorios como: ISBN, Codigo de Categoria del libro y NIT de la Editorial del libro.
+- Se debe poder realizar el registro de un nuevo libro (que no exista en la biblioteca) al menos con los datos obligatorios como: ISBN, titulo, Codigo de Categoria del libro y NIT de la Editorial del libro.
 
 - Se debe poder actualizar la informacion de un libro ya registrado teniendo en cuenta unicamente los datos que se requieren cambiar.
 
@@ -80,7 +80,7 @@ A partir de lo que se requiere desarrollar se crean las siguientes Historias de 
 
 - Se debe poder buscar cualquier editorial existente mediante su NIT.
 
-- Se debe poder realizar el registro de una nueva editorial (que no exista previamente) colocando unicamente el NIT de la editorial y el nombre de la editorial.
+- Se debe poder realizar el registro de una nueva editorial (que no exista previamente) ingresando como minimo el NIT de 3la editorial y el nombre de la editorial.
 
 - Se debe poder actualizar la informacion de una editorial ya registrada teniendo en cuenta unicamente los datos que se requieren modificar.
 
